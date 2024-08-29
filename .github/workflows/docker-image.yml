@@ -37,9 +37,9 @@ jobs:
       env:
         NEW_VERSION: ${{ steps.version.outputs.version }}
       run: |
-        echo "Version nueva: ${{ steps.version.outputs.version  }}!!!!"
         docker build -t milton090/docker-graphql:$NEW_VERSION .
         docker build -t milton090/docker-graphql:latest .
+        echo "Version nueva: ${{ steps.version.outputs.version  }}!!!!"
         
     - name: Push Docker Image
       env:
@@ -47,6 +47,7 @@ jobs:
       run: |
         docker push milton090/docker-graphql:$NEW_VERSION
         docker push milton090/docker-graphql:latest
+        echo "Version nueva: ${{ steps.version.outputs.version  }}!!!!"
 
 
     - name: Docker Login to Azure Container Registry
