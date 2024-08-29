@@ -37,6 +37,7 @@ jobs:
       env:
         NEW_VERSION: ${{ steps.version.outputs.version }}
       run: |
+        echo "Version nueva: ${{ steps.version.outputs.version  }}!!!!"
         docker build -t milton090/docker-graphql:$NEW_VERSION .
         docker build -t milton090/docker-graphql:latest .
         
