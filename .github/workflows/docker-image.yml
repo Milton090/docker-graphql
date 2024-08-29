@@ -23,6 +23,7 @@ jobs:
       with:
         major_pattern: "major:"
         minor_pattern: "feat:"
+        fix_pattern: "fix"
         version_format: "${major}.${minor}.${patch}-prerelease${increment}"
       id: version
             
@@ -39,7 +40,7 @@ jobs:
       env:
         NEW_VERSION: ${{ steps.version.outputs.version }}
       run: |
-        docker build -t milton090/docker-graphql:NEW_VERSION .
+        docker build -t milton090/docker-graphql:$NEW_VERSION .
         docker build -t milton090/docker-graphql:latest .
         
     - name: Push Docker Image
