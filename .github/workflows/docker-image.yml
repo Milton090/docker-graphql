@@ -23,7 +23,7 @@ jobs:
       with:
         major_pattern: "major:"
         minor_pattern: "feat:"
-        fix_pattern: "fix"
+        fix_pattern: "fix:"
         version_format: "${major}.${minor}.${patch}-prerelease${increment}"
       id: version
             
@@ -31,10 +31,8 @@ jobs:
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
-        NEW_VERSION: ${{ steps.version.outputs.version }}
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PWD
-        echo "New Version: $NEW_VERSION!!!!!!!"
 
     - name: Build Docker Image
       env:
@@ -49,6 +47,24 @@ jobs:
       run: |
         docker push milton090/docker-graphql:$NEW_VERSION
         docker push milton090/docker-graphql:latest
-    # - name: Build the Docker image
-    #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
-    
+
+
+    - name: Docker Login to Azure Container Registry
+      env:
+        ACR_LOGIN_SERVER: <tu-registro-acr>.azurecr.io
+      run: |
+        echo ${{ secrets.AZURE_ACR_PASSWORD }} | docker login $ACR_LOGIN_SERVER --username ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
+
+    - name: Build Docker Image
+      env:
+        NEW_VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        docker build -t dockergraphql.azurecr.io/docker-graphql:$NEW_VERSION .
+        docker build -t dockergraphql.azurecr.io/docker-graphql:latest .
+
+    - name: Push Docker Image to Azure Container Registry
+      env:
+        NEW_VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        docker push dockergraphql.azurecr.io/docker-graphql:$NEW_VERSION
+        docker push dockergraphql.azurecr.io/docker-graphql:latest
