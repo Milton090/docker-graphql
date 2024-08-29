@@ -31,7 +31,7 @@ jobs:
         docker build -t milton090/docker-graphql:0.0.1 .
     - name: Push Docker Image
       run: |
-        docker push milton090/docker-graphql:0.0.1 .
+        docker push milton090/docker-graphql:0.0.1
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
     
